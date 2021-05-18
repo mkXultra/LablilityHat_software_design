@@ -1,0 +1,67 @@
+@startuml
+title "LablilityHatシステム構成図"
+
+note as N1
+ 赤線はプログラム動作
+ 青線は初期セットアップ時の動線
+ 緑線はユーザーが通常使用するIF
+end note
+
+note as N2
+  ラビリティサーバーはクラウドに置くか、サーバーに置くかは要相談
+end note
+
+node "ラズパイ"{
+ node "LablilityHat"{
+ component "LED0" 
+ component "LED1" 
+ component "LED2" 
+ component "LED3" 
+ component "Button0" 
+ component "Button1" 
+ component "Button2" 
+ component "Button3" 
+ }
+
+ node "LablilityHatソフト"{
+ interface "メインコア" as deviceSoftware
+ interface "送信ドライバー" as deviceSend
+ interface "受信ドライバー" as deviceReceive
+ component "Configure file" as configure
+ }
+}
+
+node "LablilityHatサーバー"{
+ interface "送信プログラム" as serverSend
+ interface "受信API" as serverReceive
+ interface "Configure generator" as configureGene
+}
+
+node "IFTTT"{
+ interface "GMAIL" as iftttGmail
+ interface "etc..." as iftttEtc
+}
+
+node "ALEXA"{
+ interface "定形スキル" as alexaGmail
+ interface "etc..." as alexaEtc
+}
+
+"user"
+
+user -[bold,#green]-> LablilityHat :指で押す
+user <-[bold,#blue]- configureGene :webUI
+user -[bold,#blue]-> configure :terminal
+
+LablilityHatサーバー <---> LablilityHatソフト :web通信
+LablilityHatソフト <---> LablilityHat :GPIO
+
+deviceSoftware <--> deviceSend
+deviceSoftware <--> deviceReceive
+deviceSoftware --> configure
+
+LablilityHatサーバー <-----> ALEXA :SDK?API?
+LablilityHatサーバー <-----> IFTTT :SDK?API?
+
+
+@enduml
