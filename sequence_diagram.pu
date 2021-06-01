@@ -1,0 +1,14 @@
+@startuml
+title Exsample.ラビリティがボタンを押されて外部連携するケース1
+
+actor       actor       as user
+user -> L_C: push button 1
+L_C -> L_S: Request http://{L_S}/UUID/lability_core/buttons/1/pushed
+note left:L_C is Lability core \nL_S is Lability server
+L_S --> IFTTT: Request https://maker.ifttt.com/trigger/${serviceName}/with/key/${apiKey}
+IFTTT --> L_S: success Response
+L_S --> L_C:  success Response
+L_S --> L_C:  Request http://{L_C}/UUID/leds/{led_num}/blink/{blink_time}
+L_C -> user: blink led
+L_C --> L_S:  success Response
+@enduml
